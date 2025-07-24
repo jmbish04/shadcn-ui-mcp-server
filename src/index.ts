@@ -13,7 +13,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { setupHandlers } from './handler.js';
-import { axios } from './utils/axios.js';
+import { axios } from './utils/axios-svelte.js'
 import { z } from 'zod';
 import { 
   toolHandlers,

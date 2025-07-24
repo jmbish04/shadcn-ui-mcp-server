@@ -1,4 +1,4 @@
-import { axios } from '../../utils/axios.js';
+import { axios } from '../../utils/axios-svelte.js';
 import { logError } from '../../utils/logger.js';
 
 export async function handleListBlocks({ category }: { category?: string }) {

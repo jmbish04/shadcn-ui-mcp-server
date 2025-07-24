@@ -1,4 +1,4 @@
-import { axios } from '../../utils/axios.js';
+import { axios } from '../../utils/axios-svelte.js';
 import { logError } from '../../utils/logger.js';
 
 export async function handleGetDirectoryStructure({ 
@@ -16,7 +16,7 @@ export async function handleGetDirectoryStructure({
     const directoryTree = await axios.buildDirectoryTree(
       owner || axios.paths.REPO_OWNER,
       repo || axios.paths.REPO_NAME,
-      path || axios.paths.NEW_YORK_V4_PATH,
+      path || axios.paths.BLOCKS,
       branch || axios.paths.REPO_BRANCH
     );
     return {
