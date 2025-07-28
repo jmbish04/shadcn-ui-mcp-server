@@ -5,6 +5,8 @@
  * Prompts help to direct the model on how to process user requests.
  */
 
+import { getFramework } from './utils/framework.js';
+
 /**
  * List of prompts metadata available in this MCP server
  * Each prompt must have a name, description, and arguments if parameters are needed
@@ -119,6 +121,9 @@ export const promptHandlers = {
     "build-shadcn-page": ({ pageType, features = "", layout = "sidebar", style = "modern" }: { 
       pageType: string, features?: string, layout?: string, style?: string 
     }) => {
+      const framework = getFramework();
+      const isSvelte = framework === 'svelte';
+      
       return {
         messages: [
           {
@@ -142,7 +147,7 @@ INSTRUCTIONS:
    - Use shadcn/ui v4 components and blocks as building blocks
    - Ensure responsive design with Tailwind CSS classes
    - Implement proper TypeScript types
-   - Follow React best practices and hooks patterns
+   - Follow ${isSvelte ? 'Svelte' : 'React'} best practices and ${isSvelte ? 'runes' : 'hooks'} patterns
    - Include proper accessibility attributes
 
 3. For ${pageType} pages specifically:
@@ -152,7 +157,7 @@ INSTRUCTIONS:
    - Create a main page component
    - Use sub-components for complex sections
    - Include proper imports from shadcn/ui registry
-   - Add necessary state management with React hooks
+   - Add necessary state management with ${isSvelte ? 'Svelte runes' : 'React hooks'}
    - Include proper error handling
 
 5. Styling Guidelines:
@@ -171,6 +176,9 @@ Please provide complete, production-ready code with proper imports and TypeScrip
     "create-dashboard": ({ dashboardType, widgets = "charts,tables,cards", navigation = "sidebar" }: { 
       dashboardType: string, widgets?: string, navigation?: string 
     }) => {
+      const framework = getFramework();
+      const isSvelte = framework === 'svelte';
+      
       return {
         messages: [
           {
@@ -208,7 +216,7 @@ INSTRUCTIONS:
 
 5. Data Management:
    - Create mock data structures for ${dashboardType}
-   - Implement state management with React hooks
+   - Implement state management with ${isSvelte ? 'Svelte runes' : 'React hooks'}
    - Add loading states and error handling
    - Include data refresh functionality
 
@@ -292,6 +300,9 @@ Provide complete authentication flow code with proper TypeScript types, validati
     "optimize-shadcn-component": ({ component, optimization = "performance", useCase = "general" }: { 
       component: string, optimization?: string, useCase?: string 
     }) => {
+      const framework = getFramework();
+      const isSvelte = framework === 'svelte';
+      
       return {
         messages: [
           {
@@ -312,7 +323,7 @@ INSTRUCTIONS:
    - Use 'get_component_metadata' to understand dependencies
 
 2. Optimization Strategy for ${optimization}:
-   ${getOptimizationInstructions(optimization)}
+   ${getOptimizationInstructions(optimization, isSvelte)}
 
 3. Use Case Specific Enhancements for ${useCase}:
    - Analyze how ${component} is typically used in ${useCase} scenarios
@@ -326,8 +337,8 @@ INSTRUCTIONS:
    - Include usage examples demonstrating improvements
 
 5. Best Practices:
-   - Follow React performance best practices
-   - Implement proper memoization where needed
+   - Follow ${isSvelte ? 'Svelte' : 'React'} performance best practices
+   - Implement ${isSvelte ? 'Svelte reactivity patterns' : 'proper memoization'} where needed
    - Ensure backward compatibility
    - Add comprehensive prop validation
 
@@ -468,9 +479,16 @@ function getPageTypeSpecificInstructions(pageType: string): string {
 /**
  * Helper function to get optimization specific instructions
  */
-function getOptimizationInstructions(optimization: string): string {
+function getOptimizationInstructions(optimization: string, isSvelte: boolean): string {
   const instructions = {
-    performance: `
+    performance: isSvelte ? `
+   - Use Svelte's built-in reactivity with runes for fine-grained updates
+   - Minimize the use of reactive statements that cause unnecessary updates
+   - Use derived state with $derived
+   - Consider using $effect only when necessary
+   - Implement lazy loading for heavy components
+   - Use the $state.raw for non-reactive data to avoid unnecessary reactivity overhead`
+    : `
    - Implement React.memo for preventing unnecessary re-renders
    - Use useMemo and useCallback hooks appropriately
    - Optimize bundle size by code splitting
@@ -503,6 +521,6 @@ function getOptimizationInstructions(optimization: string): string {
    - Ensure animations respect reduced motion preferences`
   };
   
-  return instructions[optimization as keyof typeof instructions] || 
+   return instructions[optimization as keyof typeof instructions] || 
          'Focus on general code quality improvements and best practices implementation.';
 }
