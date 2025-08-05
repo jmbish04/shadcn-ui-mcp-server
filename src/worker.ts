@@ -28,6 +28,7 @@ async function listComponents(env: Env): Promise<string[]> {
                .map(item => item.name.replace('.tsx', ''));
   } catch {
     // Fallback minimal component list when network is unavailable
+    console.error('Failed to list components from GitHub, using fallback:', error);
     return ['button', 'input', 'card'];
   }
 }
@@ -43,11 +44,13 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     try {
-      if (url.pathname === '/components' && request.method === 'GET') {
-        const components = await listComponents(env);
-        return new Response(JSON.stringify(components), {
-          headers: { 'Content-Type': 'application/json' }
-        });
+      if (url.pathname.startsWith('/components/') && request.method === 'GET') {
+        const name = url.pathname.split('/')[2];
+        if (!name) {
+          return new Response('Bad Request: Component name is missing.', { status: 400 });
+        }
+        const source = await getComponentSource(name, env);
+        return new Response(source, { headers: { 'Content-Type': 'text/plain' } });
       }
       if (url.pathname.startsWith('/components/') && request.method === 'GET') {
         const name = url.pathname.split('/')[2];
