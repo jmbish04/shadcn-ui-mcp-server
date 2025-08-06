@@ -23,7 +23,7 @@ async function listComponents(env: Env): Promise<string[]> {
   try {
     const res = await githubFetch(url, env);
     if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
-    const data = await res.json() as any[];
+    const data = await res.json() as { type: string, name: string }[];
     return data.filter(item => item.type === 'file' && item.name.endsWith('.tsx'))
                .map(item => item.name.replace('.tsx', ''));
   } catch {
