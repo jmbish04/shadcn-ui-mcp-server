@@ -54,6 +54,9 @@ export default {
       }
       if (url.pathname.startsWith('/components/') && request.method === 'GET') {
         const name = url.pathname.split('/')[2];
+        if (!name) {
+          return new Response('Bad Request: Component name is missing.', { status: 400 });
+        }
         const source = await getComponentSource(name, env);
         return new Response(source, { headers: { 'Content-Type': 'text/plain' } });
       }
