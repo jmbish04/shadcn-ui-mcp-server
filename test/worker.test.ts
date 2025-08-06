@@ -21,10 +21,17 @@ afterAll(async () => {
 });
 
 describe('Cloudflare Worker', () => {
-  it('lists components', async () => {
+  it('lists components using fallback when GitHub is unavailable', async () => {
     const res = await mf.dispatchFetch('http://localhost/components');
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(Array.isArray(json)).toBe(true);
+    // Miniflare blocks network access by default, so this tests the fallback logic.
+    expect(json).toEqual(['button', 'input', 'card']);
+  });
+
+  it('returns 404 for unknown routes', async () => {
+    const res = await mf.dispatchFetch('http://localhost/unknown-path');
+    expect(res.status).toBe(404);
+    expect(await res.text()).toBe('Not found');
   });
 });
