@@ -18,8 +18,10 @@
     "prepublishOnly": "npm run clean && npm run build && chmod +x build/index.js",
     "start": "node build/index.js",
     "dev": "tsc && node build/index.js",
-    "test": "./test-package.sh",
-    "examples": "./examples.sh"
+    "test": "npm run build && vitest run",
+    "examples": "./examples.sh",
+    "dev:worker": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "keywords": [
     "mcp",
@@ -57,6 +59,10 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/uuid": "^10.0.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "vitest": "^1.6.0",
+    "miniflare": "^3.20241218.0",
+    "wrangler": "^3.90.0"
   }
 }

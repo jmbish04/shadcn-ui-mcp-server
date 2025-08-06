@@ -75,6 +75,30 @@ Examples:
   export FRAMEWORK=svelte && npx @jpisnice/shadcn-ui-mcp-server
 ```
 
+## 🌐 Cloudflare Worker Deployment
+
+This repository includes a Cloudflare Worker that exposes a lightweight MCP interface at the edge.
+
+### Deploy
+
+```bash
+npm run deploy
+```
+
+### Local Development
+
+```bash
+npm run dev:worker
+```
+
+### Running Tests
+
+```bash
+npm test
+```
+
+The tests compile the worker and verify that the component listing endpoint functions correctly using a Miniflare environment.
+
 ## 🔑 GitHub API Token Setup
 
 **Why do you need a token?**
